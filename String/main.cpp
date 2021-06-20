@@ -29,29 +29,27 @@ public:
 	}
 
 	//			Constructors:
-	explicit String(unsigned int size = 80)
+	explicit String(unsigned int size = 80) :size(size), str(new char[size] {})
 	{
-		this->size = size;
-		this->str = new char[size] {};
+		//this->size = size;
+		//this->str = new char[size] {};
 		cout << "SizeConstructor:\t" << this << endl;
 	}
 
-	String(const char str[])
+	String(const char str[]) :String(strlen(str) + 1)
 	{
-		this->size = strlen(str) + 1;
-		this->str = new char[size] {};
 		for (int i = 0; str[i]; i++)
 			this->str[i] = str[i];
 		cout << "Constructor:\t\t" << this << endl;
 	}
 
-	String(const String& other)
+	String(const String& other) :String(other.str)
 	{
-		this->size = other.size;
+		//this->size = other.size;
 		//this->str = other.str;	//Низя так делать с указателями!!! Shallow copy
-		this->str = new char[size] {};
-		for (int i = 0; i < size; i++)
-			this->str[i] = other.str[i];	//Побитовое (поэдементное, побайтовое) копирование
+		//this->str = new char[size] {};
+		//for (int i = 0; i < size; i++)
+			//this->str[i] = other.str[i];	//Побитовое (поэдементное, побайтовое) копирование
 											//Deep copy.
 		cout << "CopyConstructor:\t" << this << endl;
 	}
@@ -153,7 +151,7 @@ std::ostream& operator<<(std::ostream& os, const String& obj)
 
 //#define CONSTRUCTORS_CHECK
 //#define INPUT_CHECK
-//#define OPERATOR_PLUS_CHECK
+#define OPERATOR_PLUS_CHECK
 //#define HOW_CAN_WE_CALL_CONSTRUCTORS
 
 void main()
@@ -191,6 +189,10 @@ void main()
 
 	str1 += str2;
 	cout << str1 << endl;
+	cout << delimiter << endl;
+	String str3 = str1;
+	cout << delimiter << endl;
+	cout << str3 << endl;
 #endif // OPERATOR_PLUS_CHECK
 
 #ifdef HOW_CAN_WE_CALL_CONSTRUCTORS

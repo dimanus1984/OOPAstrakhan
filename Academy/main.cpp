@@ -7,6 +7,8 @@ using std::endl;
 #define tab "\t"
 #define delimiter "\n--------------------------------------------------------------\n"
 
+#define OSTREAM_FOR_HUMAN_ONLI
+
 class Human
 {
 	string last_name;
@@ -50,16 +52,16 @@ public:
 		cout << "HDestructor:\t" << this << endl;
 	}
 	//Methods:
-	virtual void print()
+	virtual ostream& print(ostream& os)const
 	{
-		cout << last_name << " " << first_name << " " << age << " лет." << endl;
+		return os << last_name << " " << first_name << " " << age << " лет.";
 	}
 };
 
 ostream& operator<<(ostream& os, const Human& obj)
 {
-	os << obj.get_last_name() << " " << obj.get_first_name() << ", " << obj.get_age() << " лет";
-	return os;
+	//os << obj.get_last_name() << " " << obj.get_first_name() << ", " << obj.get_age() << " лет";
+	return obj.print(os);
 }
 
 class Student :public Human
@@ -110,19 +112,22 @@ public:
 	}
 
 	//Methods:
-	void print()
+	ostream& print(ostream& os)const
 	{
-		Human::print();
-		cout << "Специальность: " << specialty << ", группа: " << group << ", успеваемость: " << rating << endl;
+		Human::print(os);
+		return os << "Специальность: " << specialty << ", группа: " << group << ", успеваемость: " << rating;
 	}
 };
 
+#ifndef OSTREAM_FOR_HUMAN_ONLI
 ostream& operator<<(ostream& os, const Student& obj)
 {
-	os << (Human&)obj << " ";
-	os <<"Специальность: " << obj.get_specialty() << ", группа: " << obj.get_group() << ", успеваемость: " << obj.get_rating();
-	return os;
+	//os << (Human&)obj << " ";
+	//os <<"Специальность: " << obj.get_specialty() << ", группа: " << obj.get_group() << ", успеваемость: " << obj.get_rating();
+	return obj.print(os);
 }
+#endif // !OSTREAM_FOR_HUMAN_ONLI
+
 
 class Teacher :public Human
 {
@@ -160,20 +165,23 @@ public:
 	{
 		cout << "TDestructor:\t" << this << endl;
 	}
-	void print()
+	ostream& print(ostream& os)const
 	{
-		Human::print();
-		cout << "Специальность: " << specialty << ", опыт преподавания: " << experience << " лет" << endl;
+		Human::print(os);
+		return os << "Специальность: " << specialty << ", опыт преподавания: " << experience << " лет.";
 	}
 };
 
+#ifndef OSTREAM_FOR_HUMAN_ONLI
 ostream& operator<<(ostream& os, const Teacher& obj)
 {
-	os << (Human&)obj << " ";
-	os << "Специвльность: " << obj.get_specialty()
-		<< ", опыт преподавания: " << obj.get_experience() << " лет";
-	return os;
+	//os << (Human&)obj << " ";
+	//os << "Специвльность: " << obj.get_specialty() << ", опыт преподавания: " << obj.get_experience() << " лет";
+	//return os;
+	return obj.print(os);
 }
+#endif // !OSTREAM_FOR_HUMAN_ONLI
+
 
 class Graduate:public Student
 {
@@ -202,20 +210,24 @@ public:
 	{
 		cout << "GDestructor:\t" << this << endl;
 	}
-	void print()
+	ostream& print(ostream& os)const
 	{
-		Student::print();
-		cout << "Тема дипломного проекта: " << subject << endl;
+		Student::print(os);
+		return os << ".\nТема дипломного проекта: " << subject << ";";
 	}
 
 };
 
+#ifndef OSTREAM_FOR_HUMAN_ONLI
 ostream& operator<<(ostream& os, const Graduate& obj)
 {
-	os << (Student&)obj;
-	return os << ". Тема диплома: " << obj.get_subject();
+	//os << (Student&)obj;
+	//return os << ". Тема диплома: " << obj.get_subject();
+	return obj.print(os);
 }
+#endif // !OSTREAM_FOR_HUMAN_ONLI
 
+//#ifndef - IF NOT DEFINED
 //#define INHERITANCE_BASICS
 
 void main()
@@ -249,11 +261,13 @@ human.print();*/
 	{
 		//group[i]->print();
 		//cout << *group[i] << endl;
-		cout << typeid(*group[i]).name() << endl;
-		if (typeid(*group[i]) == typeid(Student))cout << *dynamic_cast<Student*>(group[i]) << endl;
+		//cout << typeid(*group[i]).name() << endl;
+
+		/*if (typeid(*group[i]) == typeid(Student))cout << *dynamic_cast<Student*>(group[i]) << endl;
 		if (typeid(*group[i]) == typeid(Teacher))cout << *dynamic_cast<Teacher*>(group[i]) << endl;
-		if (typeid(*group[i]) == typeid(Graduate))cout << *dynamic_cast<Graduate*>(group[i]) << endl;
-		cout << delimiter << endl;
+		if (typeid(*group[i]) == typeid(Graduate))cout << *dynamic_cast<Graduate*>(group[i]) << endl;*/
+		cout << *group[i] << endl;
+		//cout << delimiter << endl;
 	}
 	for (int i = 0; i < sizeof(group) / sizeof(Human*); i++)
 	{

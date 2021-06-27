@@ -15,8 +15,7 @@ class String
 	unsigned int size;	//Размер строки в байтах.
 	char* str;			//Указатель на строку в динамической памяти.
 public:
-	unsigned int get_size()const
-	{
+	unsigned int get_sizo
 		return size;
 	}
 	const char* get_str()const

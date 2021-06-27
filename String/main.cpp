@@ -2,7 +2,7 @@
 
 //#define CONSTRUCTORS_CHECK
 //#define INPUT_CHECK
-#define OPERATOR_PLUS_CHECK
+//#define OPERATOR_PLUS_CHECK
 //#define HOW_CAN_WE_CALL_CONSTRUCTORS
 
 void main()
@@ -55,5 +55,8 @@ void main()
 	str4 = str3;	//Copy assignment (operator=). Copy constructor вызвать невозможно
 					//поскольку объект str4 уже создан.  
 #endif // HOW_CAN_WE_CALL_CONSTRUCTORS
+
+	String str;
+	cout << "¬ведите строку: "; cin >> str;
 
 }

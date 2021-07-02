@@ -1,4 +1,6 @@
 #include<iostream>
+#include<string>
+#include<regex>
 using namespace std;
 using std::cout;
 using std::cin;
@@ -27,15 +29,30 @@ public:
 	}
 	void set_last_name(const string& last_name)
 	{
-		this->last_name = last_name;
+		std::regex en_rgx("[A-Z][a-z]{1,15}");
+		std::regex ru_rgx("[А-Я][а-я]{1,15}");
+		//std::regex ru_double_rgx("[А-Я][а-я]{1,15}[ -]{0,1}[А-Я]{0,1}[а-я]{0,15}");
+		std::regex ru_double_rgx("([А-Я][а-я]{1,15}[ -]{0,1}){1,2}");
+		//std::regex ru_double_rgx("(ru_rgx)[ -](ru_rgx){0,1}");
+		if
+			(
+				std::regex_match(last_name, en_rgx) ||
+				std::regex_match(last_name, ru_rgx) ||
+				std::regex_match(last_name, ru_double_rgx))
+			this->last_name = last_name;
+		else this->last_name = "Bad name";
 	}
 	void set_first_name(const string& first_name)
 	{
-		this->first_name = first_name;
+		std::regex en_rgx("[A-Z][a-z]{1,15}");
+		std::regex ru_rgx("[А-Я][а-я]{1,15}");
+		if (std::regex_match(first_name, en_rgx) || std::regex_match(first_name, ru_rgx))this->first_name = first_name;
+		else this->first_name = "Bad name";
 	}
 	void set_age(unsigned int age)
 	{
-		this->age = age;
+		if (age >= 18 && age <= 150)this->age = age;
+		else this->age = 0;
 	}
 	//Constructors:
 	Human(const string& last_name, const string& first_name, unsigned int age)
@@ -90,7 +107,8 @@ public:
 	}
 	void set_rating(double rating)
 	{
-		this->rating = rating;
+		if (rating >= 0 && rating <= 100)this->rating = rating;
+		else this->rating = 0;
 	}
 	//Constructors:
 	Student
@@ -120,7 +138,7 @@ public:
 ostream& operator<<(ostream& os, const Student& obj)
 {
 	os << (Human&)obj << " ";
-	os <<"Специальность: " << obj.get_specialty() << ", группа: " << obj.get_group() << ", успеваемость: " << obj.get_rating();
+	os << "Специальность: " << obj.get_specialty() << ", группа: " << obj.get_group() << ", успеваемость: " << obj.get_rating();
 	return os;
 }
 
@@ -143,7 +161,8 @@ public:
 	}
 	void set_experience(unsigned int experience)
 	{
-		this->experience = experience;
+		if (experience >= 0 && experience <= 130)this->experience = experience;
+		else experience = 0;
 	}
 	//Constructors:
 	Teacher
@@ -175,7 +194,7 @@ ostream& operator<<(ostream& os, const Teacher& obj)
 	return os;
 }
 
-class Graduate:public Student
+class Graduate :public Student
 {
 	string subject;
 	//Teacher instructor;
@@ -193,7 +212,7 @@ public:
 		const string& last_name, const string& first_name, unsigned int age,
 		const string& specialty, const string& group, double rating,
 		const string& subject
-	):Student(last_name, first_name, age, specialty, group, rating)
+	) :Student(last_name, first_name, age, specialty, group, rating)
 	{
 		set_subject(subject);
 		cout << "GConstructor:\t" << this << endl;
@@ -237,7 +256,7 @@ human.print();*/
 	{
 		new Student("Васильев", "Александр",23,"РПО","ПВ_011",90),
 		new Student("Васильева","Маргарита",25,"РПО","ПВ_011",90),
-		new Teacher("Ковтун","Олег",36,"Разработка приложений на C++",6),
+		new Teacher("Ковтун Ковтун","Олег",36,"Разработка приложений на C++",6),
 		new Student("Ивлев","Александр",25,"РПО","ПВ_011",95),
 		new Graduate("Рахманин","Николай",28,"РПО","ПВ_011",98, "Разработка обучающей игры"),
 		new Teacher("Романов","Андрей",30,"HardwarePC",5),

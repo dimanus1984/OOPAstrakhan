@@ -37,17 +37,39 @@ void main()
 #endif // NAME_CHECK
 
 #ifdef EMAIL_CHECK
-	string email;
-	cout >> "Type your E-mail: "; cin >> email;
-	std::regex rgx("[A-Za-z.0-9]{3,30}@[A-Za-z]{1,20}.[A-Za-z]{2,5}");
-	if (std::regex_match(email, rgx))
+	std::string email;
+		cout << "Type your E-mail: "; cin >> email;
+	/*do
 	{
-		cout << "E-mail OK:" << email << endl;
-	}
-	else
-	{
-		cout << "E-mail OK:" << email << endl;
-	}
-#endif // EMAIL_CHECK
+		cout << "Type your E-mail: "; cin >> email;
+		if (email.find('@') == std::string::npos || email.size() < 8)cout << "Not E-mail,try again. ";
+	} while (email.find('@') == std::string::npos || email.size() < 8);*/
+		try
+		{
+			//std::regex rgx("[A-Za-z.0-9]{3,30}@[A-Za-z]{1,20}(.[A-Za-z]{2,5}){1,2}");
+			std::regex rgx("(\\w+)(\\.?)(\\w*)@(\\w+)(\\.)(\\w){2,5})+");
+			/*std::regex rgx
+			(
+				"([\\w.]+)"
+				"(@)"
+				"([\\w.]+)"
+				"(\.)"
+				"([a-z]{2,5}){1,2}"
+				"[\b\w\w\w\b]"
+			);*/
+			if (std::regex_match(email, rgx))
+			{
+				cout << "E-mail OK:" << email << endl;
+			}
+			else
+			{
+				cout << "Bad E-mail" << email << endl;
+			}
+		}
+		catch (const std::exception&)
+		{
 
+		}
+#endif // EMAIL_CHECK
+	main();
 }

@@ -3,7 +3,6 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-
 #define tab "\t"
 
 class Element
@@ -22,25 +21,73 @@ public:
 		count--;
 		cout << "EDestructor:\t" << this << endl;
 	}
+	friend class Iterator;
 	friend class ForwardList;
 };
 
 int Element::count = 0;			// Инициализация статической переменной.
+
+class Iterator
+{
+	Element* Temp;				// Указатель на элемент Temp.
+public:
+	Iterator(Element* Temp = nullptr) :Temp(Temp)
+	{
+		cout << "IConstructor:\t" << this << endl;
+	}
+	~Iterator()
+	{
+		cout << "IDestructor:\t" << this << endl;
+	}
+	Iterator& operator++()		//Префиксный инкремент ++
+	{
+		Temp = Temp->pNext;
+		return *this;
+	}
+	bool operator==(const Iterator& other)const
+	{
+		return this->Temp == other.Temp;
+	}
+	bool operator!=(const Iterator& other)const
+	{
+		return this->Temp != other.Temp;
+	}
+	int& operator*()			// Если этот метод будет применен (вызовем) для константного объекта, он просто не вызовется,
+	{							// поэтому нужно два метода: один из них должен быть константным, он будет возвращать константную ссылку,
+		return Temp->Data;		// второй не константный и будет возвращать не константную ссылку.
+	}
+};
 
 class ForwardList
 {
 	Element* Head;
 	size_t size;
 public:
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
 	ForwardList()				// Default constructor - создает пустой список.
 	{
 		this->Head = nullptr;	// Если голова указывает на 0, то список пуст.
 		this->size = 0;
 		cout << "LConstructor:\t" << this << endl;
 	}
-	explicit ForwardList(size_t size) :ForwardList()
+	explicit ForwardList(size_t size) :ForwardList()	// Конструктор создает столько то элементов, столько элементов сколько мы его попросили создать.
 	{
 		while (size--)push_front(0);
+	}
+	ForwardList(const std::initializer_list<int>& il) :ForwardList() // initializer_list - передается по константной ссылке, чтобы его нельзя было изменить.
+	{
+		cout << typeid(il.begin()).name() << endl;
+		for (int const* it = il.begin(); it != il.end(); it++)
+		{
+			push_back(*it);
+		}
 	}
 	ForwardList(const ForwardList& other) :ForwardList()	// CopyConstructor
 	{
@@ -56,22 +103,22 @@ public:
 			push_back(Temp->Data);
 		cout << "LCopyConstructor:\t" << this << endl;
 	}
-	~ForwardList()
-	{
-		while (Head)pop_front();
-		cout << "LDestructor:\t" << this << endl;
+	~ForwardList()					// Пока в Head не нулевой адрес значит true, если true значит удаляем элемент сначала,
+	{								// если удаляем элемент с начала, тогда переходим на следующий элемент и за счет этого
+		while (Head)pop_front();	// получается при переходе на следующий элемент в какой то момент времени в Head попадает nullptr указатель на ноль
+		cout << "LDestructor:\t" << this << endl;	 // и соответственно в Head получается false и прекращается удаление.
 	}
 
-	//			Operator:
-	ForwardList& operator=(const ForwardList& other)
-	{
-		// 0) Проверяем, НЕ является ли this и other одним и тем жеобъектом:
+	//			Operators:
+	ForwardList& operator=(const ForwardList& other)	// Оператор присваивания всегда возвращает себя по ссылке, т.е. тот объект которому было присвоино значение оператора присвоить.
+	{													// Также как и конструктор копирования принимает константную ссылку на объект
+		// 0) Проверяем, НЕ является ли this и other одним и тем же объектом:
 		if (this == &other)return *this;
-		// 1) Удаляем старое значение объекта:
+		// 1) Удаляем старое значение объекта (очищаем список):
 		while (Head)pop_front();
 		// 2) Копируем ТОТ список в ЭТОТ список:
-		
-		/*Element* Temp = other.Head;
+		/*
+		Element* Temp = other.Head;
 		while (Temp)
 		{
 			push_back(Temp->Data);
@@ -84,12 +131,12 @@ public:
 		return *this;
 	}
 
-	int& operator[](size_t index)
-	{
-		if (index >= size) throw std::exception("Error: Out of range");	// бросаем исключение
-		Element* Temp = Head;
+	int& operator[](size_t index)	// Элементом list является Int. Если возвращать по значению - это всеравно, что вернуть константу
+	{								// Значение элемента Data возвращается по ссылке чтобы могли записать значение.
+		if (index >= size) throw std::exception("Error: Out of range");	// Для того чтобы обрабатывать это исключение которое мы бросаем, нужно блок кода поместить в try.
+		Element* Temp = Head;		// Возвращается ссылка на Data которую возврвщвем.
 		for (int i = 0; i < index; i++)Temp = Temp->pNext;
-		return Temp->Data;
+		return Temp->Data;			// Тогда можно записать, потому-что вернулась ссылка и по ссылке производим запись.
 	}
 
 	//			Adding elements:
@@ -204,6 +251,9 @@ public:
 		//for(Start; Stop; Step)....;
 		//for(Counter; Condition; Expression)....;
 		//for(Iterator; Condition; Expression)....;
+		// Element* Temp = Head; - объявление итератора
+		// Temp; - условие выхода
+		// Temp = Temp->pNext - переход на следующий элемент.
 		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
 			cout << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 		cout << "Количество элементов списка: " << size << endl;
@@ -215,6 +265,7 @@ public:
 //#define SIZE_CONSTRUCTOR_AND_SUBSCRIPT
 //#define COPY_METHODS
 //#define INIT_LIST_LIKE_ARRAY
+#define HARDCORE
 
 void main()
 {
@@ -255,17 +306,16 @@ void main()
 	for (int i = 0; i < list.get_size(); i++)list[i] = rand() % 100;
 	for (int i = 0; i < list.get_size(); i++)cout << list[i] << tab;
 
-	int n; cout << "Введите размер списка: "; cin >> n;
 	ForwardList list(n);
-	try
-	{
+	try		// Если код в блоке try, то try наблюдает за тем, кто бросил исключение.
+	{		// try - это как поле для игры в мяч, а ниже сть игрок catch
 		for (int i = 0; i < n; i++)list[i] = rand() % 100;
 		for (int i = 0; i < n * 2; i++)cout << list[i] << tab;
 		cout << endl;
 	}
-	catch (const std::exception& e)	// cath - обработчик исключения
-	{
-		std::cerr << e.what() << endl;
+	catch (const std::exception& e)		// cath - обработчик исключения, обычная функция с одним параметром.
+	{									// Если было брошено исключение в сегменте кода try, то обработчик его ловит.
+		std::cerr << e.what() << endl;	// exception - это тип данных. cerr - consol error
 	}
 #endif // SIZE_CONSTRUCTOR_AND_SUBSCRIPT
 
@@ -281,11 +331,11 @@ void main()
 
 	list.print();
 
-	ForwardList list2 = list;	// CopyConstructor
+	ForwardList list2 = list;	// CopyConstructor - это когда создаваемый объект ForwardList list2 инициализируем другим списком уже существующим list.
 	list2.print();
 
-	ForwardList list3;			// Default constructor
-	list3 = list2;				// CopyAssignment
+	ForwardList list3;			// Default constructor - создает ForwardList list3;
+	list3 = list2;				// CopyAssignment - список уже существует list3 и внего загоняем значения другого существующего списка list2.
 	list3.print();
 #endif // COPY_METHODS
 
@@ -294,12 +344,31 @@ void main()
 	for (int i : list)
 #endif // INIT_LIST_LIKE_ARRAY
 
-		/*ForwardList list;
+		/*
+		int n; cout << "Введите размер списка: "; cin >> n;
+		ForwardList list;
 		for (int i = 0; i < n; i++)
 		{
 			list.push_back(rand() % 100);
 		}
-		list.print();*/
+		list.print();
+		*/
 
+#ifdef HARDCORE
 
-	}
+		int arr[] = { 1024,2048,4096,8192 };
+	for (int i = 0; i < sizeof(arr) / sizeof(int); i++)
+		cout << arr[i] << tab;
+	cout << endl;
+	for (int i : arr)		// Range-based for. Работает только со статическими массивами, не переданными в какую то функцию,
+		cout << i << tab;	// т.е. если массив объявлен в той же области видимости.
+	cout << endl;			// Если массив передали в функцию, то функция принимает указатель (например int *i) и размер указателя будет 4 byte и не чего не выведется.
+
+	ForwardList list = { 3,5,8,13,21 };
+	list.print();
+	//for (Iterator it = list.begin(); it != list.end(); ++it)cout << *it << tab; cout << endl;
+	for (int i : list)
+		cout << i << tab;
+	cout << endl;
+#endif // HARDCORE
+}

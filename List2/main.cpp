@@ -15,21 +15,157 @@ class List
 	public:
 		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
+#ifdef DEBUG
 			cout << "EConstructor:\t" << this << endl;
+#endif // DEBUG
+
 		}
 		~Element()
 		{
+#ifdef DEBUG
 			cout << "EDestructor:\t" << this << endl;
+#endif // DEBUG
+
 		}
 		friend class List;
 	}*Head, * Tail;
 	//Element* Head;		// Указатель на начальный элемент списка.
 	//Element* Tail;		// Указатель на конечный элемент списка.
-	size_t size;	// Размер списка.
+	size_t size;			// Размер списка.
 public:
+	class Iterator										// Iterator будет простой оберткой над элементом.
+	{
+		Element* Temp;
+	public:
+		Iterator(Element* Temp = nullptr) :Temp(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
+		{
+#ifdef DEBUG
+			cout << "ITConstructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		~Iterator()
+		{
+#ifdef DEBUG
+			cout << "ITDestructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		Iterator& operator++()	// Prefix increment.
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		Iterator operator++(int)	// Postfix increment. Возвращает Iterator по значению.
+		{
+			Iterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		Iterator& operator--()	// Prefix decrement будет переходить на предыдущий элемент
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		Iterator operator--(int)
+		{
+			Iterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		bool operator==(const Iterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const Iterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		const int& operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+	class ReverseIterator
+	{
+		Element* Temp;	// Он также будет обварачивать указатель на элемент.
+	public:
+		ReverseIterator(Element* Temp = nullptr) :Temp(Temp)
+		{
+#ifdef DEBUG
+			cout << "RITConstructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		~ReverseIterator()
+		{
+#ifdef DEBUG
+			cout << "RITDestructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		ReverseIterator& operator++()
+		{
+			Temp = Temp->pPrev;
+			return *this;
+		}
+		ReverseIterator operator++(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pPrev;
+			return old;
+		}
+		ReverseIterator& operator--()
+		{
+			Temp = Temp->pNext;
+			return *this;
+		}
+		ReverseIterator operator--(int)
+		{
+			ReverseIterator old = *this;
+			Temp = Temp->pNext;
+			return old;
+		}
+		bool operator==(const ReverseIterator& other)const
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const ReverseIterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		const int& operator*()const		// Константный оператор разыменования будет возвращать константную ссылку на значение элемента.
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
 	size_t get_size()const
 	{
 		return size;
+	}
+	Iterator begin()
+	{
+		return Head;
+	}
+	Iterator end()
+	{
+		return nullptr;
+	}
+	ReverseIterator rbegin()
+	{
+		return Tail;
+	}
+	ReverseIterator rend()
+	{
+		return nullptr;
 	}
 	List()
 	{
@@ -40,6 +176,12 @@ public:
 	explicit List(size_t size, int value = int()) :List()
 	{
 		while (size--)push_back(value);
+	}
+	List(const std::initializer_list<int>& il) :List()
+	{
+		cout << typeid(il.begin()).name() << endl;
+		for (int const* it = il.begin(); it != il.end(); it++)
+			push_back(*it);
 	}
 	~List()
 	{
@@ -184,8 +326,8 @@ public:
 
 //#define BASE_CHECK
 //#define SIZE_CONSTRUCTOR_AND_SYBSCRIPT
-//#define HARDCORE
-//#define ITERATORS_CHECK
+#define HARDCORE
+#define ITERATORS_CHECK
 //#define COPY_CONSTRUCTOR_CHECK
 //#define COPY_ASSIGNMENT_CHECK
 
@@ -236,8 +378,18 @@ void main()
 #endif // HARDCORE
 
 #ifdef ITERATORS_CHECK
-	List list = { 3,5,8,13,21 };
-	for (? ? ? );
+	//List list = { 3,5,8,13,21 };
+	for (List::Iterator it = list.begin(); it != list.end(); ++it)
+		cout << *it << tab;
+	cout << endl;
+
+	/*for (List::Iterator it = list.end(); it != list.begin(); it--)	// Выводит список в обратном направлении.
+		cout << *it << tab;
+	cout << endl;*/
+
+	for (List::ReverseIterator rit = list.rbegin(); rit != list.rend(); ++rit)	// Здесь нужен класс ReverseIterator.
+		cout << *rit << tab;
+	cout << endl;
 #endif // ITERATORS_CHECK
 
 #ifdef COPY_CONSTRUCTOR_CHECK

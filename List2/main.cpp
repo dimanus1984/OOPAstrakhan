@@ -32,12 +32,48 @@ class List
 	//Element* Head;		// Указатель на начальный элемент списка.
 	//Element* Tail;		// Указатель на конечный элемент списка.
 	size_t size;			// Размер списка.
-public:
-	class Iterator										// Iterator будет простой оберткой над элементом.
+	class BaseIterator
 	{
+	protected:
 		Element* Temp;
 	public:
-		Iterator(Element* Temp = nullptr) :Temp(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
+		BaseIterator(Element* Temp) :Temp(Temp)
+		{
+#ifdef DEBUG
+			cout << "BITConstructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		~BaseIterator()
+		{
+#ifdef DEBUG
+			cout << "BITDestructor:\t" << this << endl;
+#endif // DEBUG
+
+		}
+		//			Operators:
+		bool operator==(const BaseIterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
+		{
+			return this->Temp == other.Temp;
+		}
+		bool operator!=(const BaseIterator& other)const
+		{
+			return this->Temp != other.Temp;
+		}
+		const int& operator*()const
+		{
+			return Temp->Data;
+		}
+		int& operator*()
+		{
+			return Temp->Data;
+		}
+	};
+public:
+	class Iterator:public BaseIterator					// Iterator будет простой оберткой над элементом.
+	{
+	public:
+		Iterator(Element* Temp = nullptr) :BaseIterator(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
 		{
 #ifdef DEBUG
 			cout << "ITConstructor:\t" << this << endl;
@@ -73,28 +109,11 @@ public:
 			Temp = Temp->pPrev;
 			return old;
 		}
-		bool operator==(const Iterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
-		{
-			return this->Temp == other.Temp;
-		}
-		bool operator!=(const Iterator& other)const
-		{
-			return this->Temp != other.Temp;
-		}
-		const int& operator*()const
-		{
-			return Temp->Data;
-		}
-		int& operator*()
-		{
-			return Temp->Data;
-		}
 	};
-	class ReverseIterator
+	class ReverseIterator:public BaseIterator
 	{
-		Element* Temp;	// Он также будет обварачивать указатель на элемент.
 	public:
-		ReverseIterator(Element* Temp = nullptr) :Temp(Temp)
+		ReverseIterator(Element* Temp = nullptr) :BaseIterator(Temp)
 		{
 #ifdef DEBUG
 			cout << "RITConstructor:\t" << this << endl;
@@ -129,22 +148,6 @@ public:
 			ReverseIterator old = *this;
 			Temp = Temp->pNext;
 			return old;
-		}
-		bool operator==(const ReverseIterator& other)const
-		{
-			return this->Temp == other.Temp;
-		}
-		bool operator!=(const ReverseIterator& other)const
-		{
-			return this->Temp != other.Temp;
-		}
-		const int& operator*()const		// Константный оператор разыменования будет возвращать константную ссылку на значение элемента.
-		{
-			return Temp->Data;
-		}
-		int& operator*()
-		{
-			return Temp->Data;
 		}
 	};
 	size_t get_size()const
@@ -326,7 +329,7 @@ public:
 
 //#define BASE_CHECK
 //#define SIZE_CONSTRUCTOR_AND_SYBSCRIPT
-#define HARDCORE
+//#define HARDCORE
 #define ITERATORS_CHECK
 //#define COPY_CONSTRUCTOR_CHECK
 //#define COPY_ASSIGNMENT_CHECK
@@ -378,7 +381,7 @@ void main()
 #endif // HARDCORE
 
 #ifdef ITERATORS_CHECK
-	//List list = { 3,5,8,13,21 };
+	List list = { 3,5,8,13,21 };
 	for (List::Iterator it = list.begin(); it != list.end(); ++it)
 		cout << *it << tab;
 	cout << endl;

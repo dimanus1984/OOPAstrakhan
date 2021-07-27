@@ -83,7 +83,7 @@ public:
 #endif // DEBUG
 
 		}
-		ConstIterator& operator++()	// Prefix increment.
+		ConstIterator& operator++()		// Prefix increment.
 		{
 			Temp = Temp->pNext;
 			return *this;
@@ -94,7 +94,7 @@ public:
 			Temp = Temp->pNext;
 			return old;
 		}
-		ConstIterator& operator--()	// Prefix decrement будет переходить на предыдущий элемент
+		ConstIterator& operator--()		// Prefix decrement будет переходить на предыдущий элемент
 		{
 			Temp = Temp->pPrev;
 			return *this;
@@ -146,10 +146,6 @@ public:
 			return old;
 		}
 	};
-	size_t get_size()const
-	{
-		return size;
-	}
 	class Iterator :public ConstIterator
 	{
 	public:
@@ -180,210 +176,268 @@ public:
 			return Temp->Data;
 		}
 	};
-	ConstIterator cbegin()const
-	{
-		return Head;
-	}
-	ConstIterator cend()const
-	{
-		return nullptr;
-	}
-	Iterator begin()
-	{
-		return Head;
-	}
-	Iterator end()
-	{
-		return nullptr;
-	}
+	size_t get_size()const;
 
-	ConstReverseIterator crbegin()const
-	{
-		return Tail;
-	}
-	ConstReverseIterator crend()const
-	{
-		return nullptr;
-	}
-	ReverseIterator rbegin()
-	{
-		return Tail;
-	}
-	ReverseIterator rend()
-	{
-		return nullptr;
-	}
-	List()
-	{
-		Head = Tail = nullptr;
-		size = 0;
-		cout << "LConstructor:\t" << this << endl;
-	}
-	explicit List(size_t size, int value = int()) :List()
-	{
-		while (size--)push_back(value);
-	}
-	List(const std::initializer_list<int>& il) :List()
-	{
-		cout << typeid(il.begin()).name() << endl;
-		for (int const* it = il.begin(); it != il.end(); it++)
-			push_back(*it);
-	}
-	List(const List& other) :List()		//CopyConstructor принимает константную ссылку на объект.
-	{
-		//for (int i : other)push_back(i);
-		for (ConstIterator it = other.cbegin(); it != other.cend(); it++)
-			push_back(*it);
-		cout << "LCopyConstructor:" << this << endl;
-	}
-	List(List&& other)					// MoveConstructor
-	{
-		this->size = other.size;
-		this->Head = other.Head;
-		this->Tail = other.Tail;
-		other.Head = other.Tail = nullptr;
-		cout << "LMoveConstructor:" << this << endl;
-	}
-	~List()
-	{
-		//while (Head)pop_front();
-		while (Tail)pop_back();
-		cout << "LDestructor:\t" << this << endl;
-	}
+	ConstIterator cbegin()const;
+	ConstIterator cend()const;
+	Iterator begin();
+	Iterator end();
+
+	ConstReverseIterator crbegin()const;
+	ConstReverseIterator crend()const;
+	ReverseIterator rbegin();
+	ReverseIterator rend();
+
+	List();
+	explicit List(size_t size, int value = int());
+	List(const std::initializer_list<int>& il);
+	List(const List& other);			//CopyConstructor принимает константную ссылку на объект.
+	List(List&& other);					// MoveConstructor
+	~List();
 
 	//			Operators:
-	int& operator[](size_t index)
-	{
-		Element* Temp;
-		if (index >= size)throw std::exception("Error: out of range");
-		if (index < size / 2)
-		{
-			Temp = Head;
-			for (size_t i = 0; i < index; i++)Temp = Temp->pNext;
-		}
-		else
-		{
-			Temp = Tail;
-			for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	//i < size - Index - 1; - это просто количество переходов, делаем на один переход меньше.
-		}
-		return Temp->Data;
-	}
+	List& operator=(const List& other);	//CopyAssignment.
+	List& operator=(List& other);
+	int& operator[](size_t index);
 
 	//			Addidng elements:
-	void push_front(int Data)
-	{
-		if (Head == nullptr && Tail == nullptr)
-		{
-			Head = Tail = new Element(Data);
-			size++;
-			return;
-		}
-		Element* New = new Element(Data);
-		New->pNext = Head;
-		Head->pPrev = New;
-		Head = New;
-		//Head = Head->pPrev = new Element(Data, Head);
-		size++;
-	}
-	void push_back(int Data)
-	{
-		if (Head == nullptr && Tail == nullptr)
-		{
-			Head = Tail = new Element(Data);
-			size++;
-			return;
-		}
-		Element* New = new Element(Data);
-		New->pPrev = Tail;
-		Tail->pNext = New;
-		Tail = New;
-		//Tail = Tail->pNext = new Element(Data, nullptr, Tail);
-		size++;
-	}
-	void insert(size_t index, int Data)
-	{
-		if (index > size)return;
-		if (index == 0)return push_front(Data);
-		if (index == size)return push_back(Data);
-		// 1) Доходим до позиции, на которую нужно вставить элемент:
-		Element* Temp;
-		if (index < size / 2)	// Если index < size / 2, тогда идем сначала.
-		{
-			Temp = Head;
-			for (size_t i = 0; i < index; i++)Temp = Temp->pNext;	// Заходим через голову, и идем по списку вперед.
-		}
-		else
-		{
-			Temp = Tail;
-			for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	// Переходим на предыдущий элемент. i < size - Index - 1; - это просто количество переходов.
-		}
-		// 2) Создаем элемент и включаем его в список:
-		Element* New = new Element(Data);
-		// 1) Включаем элемент в список:
-		New->pPrev = Temp->pPrev;
-		New->pNext = Temp;
-		Temp->pPrev->pNext = New;
-		Temp->pPrev = New;
-		//Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
-		size++;
-	}
+	void push_front(int Data);
+	void push_back(int Data);
+	void insert(size_t index, int Data);
 
 	//			Removing elements:
-	void pop_front()
-	{
-		if (Head == Tail)
-		{
-			delete Head;
-			Head = Tail = nullptr;
-			size--;
-			return;
-		}
-		// 1) Исключаем элемент из списка:
-		Head = Head->pNext;
-		// 2) Удаляем элемент из списка:
-		delete Head->pPrev;
-		// 3) "Забываем" об удаляемом элементе:
-		Head->pPrev = nullptr;
-		size--;
-	}
-	void pop_back()
-	{
-		if (Head == Tail)
-		{
-			delete Tail;
-			Head = Tail = nullptr;
-			size--;
-			return;
-		}
-		// 1) Исключаем элемент из списка:
-		Tail = Tail->pPrev;
-		// 2) Удаляем элемент из списка:
-		delete Tail->pNext;
-		// 3) Затираем об удаляемом элементе:
-		Tail->pNext = nullptr;
-		size--;
-	}
+	void pop_front();
+	void pop_back();
 
 	//			Methods:
-	void print()const
-	{
-		cout << "Head:" << Head << endl;
-		for (Element* Temp = Head; Temp; Temp = Temp->pNext)
-		{
-			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-		}
-		cout << "Количество элементов списка: " << size << endl;
-	}
-	void reverse_print()const
-	{
-		cout << "Tail:" << Tail << endl;
-		for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
-		{
-			cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
-		}
-		cout << "Количество элементов списка: " << size << endl;
-	}
+	void print()const;
+	void reverse_print()const;
 };
+
+size_t List::get_size()const
+{
+	return size;
+}
+List::ConstIterator List::cbegin()const
+{
+	return Head;
+}
+List::ConstIterator List::cend()const
+{
+	return nullptr;
+}
+List::Iterator List::begin()
+{
+	return Head;
+}
+List::Iterator List::end()
+{
+	return nullptr;
+}
+
+List::ConstReverseIterator List::crbegin()const
+{
+	return Tail;
+}
+List::ConstReverseIterator List::crend()const
+{
+	return nullptr;
+}
+List::ReverseIterator List::rbegin()
+{
+	return Tail;
+}
+List::ReverseIterator List::rend()
+{
+	return nullptr;
+}
+List::List()
+{
+	Head = Tail = nullptr;
+	size = 0;
+	cout << "LConstructor:\t" << this << endl;
+}
+List::List(size_t size, int value = int()) :List()
+{
+	while (size--)push_back(value);
+}
+List::List(const std::initializer_list<int>& il) :List()
+{
+	cout << typeid(il.begin()).name() << endl;
+	for (int const* it = il.begin(); it != il.end(); it++)
+		push_back(*it);
+}
+List::List(const List& other) :List()		//CopyConstructor принимает константную ссылку на объект.
+{
+	//for (int i : other)push_back(i);
+	for (ConstIterator it = other.cbegin(); it != other.cend(); it++)
+		push_back(*it);
+	cout << "LCopyConstructor:" << this << endl;
+}
+List::List(List&& other)					// MoveConstructor
+{
+	this->size = other.size;
+	this->Head = other.Head;
+	this->Tail = other.Tail;
+	other.Head = other.Tail = nullptr;
+	cout << "LMoveConstructor:" << this << endl;
+}
+List::~List()
+{
+	//while (Head)pop_front();
+	while (Tail)pop_back();
+	cout << "LDestructor:\t" << this << endl;
+}
+
+//			Operators:
+List& List::operator=(const List& other)		// CopyAssignment.
+{
+	if (this == &other)return *this;
+	while (Head)pop_front();
+	for (int i : other)push_back(i);
+	cout << "CopeAssignment:\t" << this << endl;
+}
+List& List::operator=(List& other)				// MoveAssignment.
+{
+	while (Head)pop_front();
+	this->size = other.size;
+	this->Head = other.Head;
+	this->Tail = other.Tail;
+	other.Head = other.Tail = nullptr;
+	cout << "MoveAssignment:\t" << this << endl;
+	return *this;
+}
+int& List::operator[](size_t index)
+{
+	Element* Temp;
+	if (index >= size)throw std::exception("Error: out of range");
+	if (index < size / 2)
+	{
+		Temp = Head;
+		for (size_t i = 0; i < index; i++)Temp = Temp->pNext;
+	}
+	else
+	{
+		Temp = Tail;
+		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	//i < size - Index - 1; - это просто количество переходов, делаем на один переход меньше.
+	}
+	return Temp->Data;
+}
+
+//			Addidng elements:
+void List::push_front(int Data)
+{
+	if (Head == nullptr && Tail == nullptr)
+	{
+		Head = Tail = new Element(Data);
+		size++;
+		return;
+	}
+	Element* New = new Element(Data);
+	New->pNext = Head;
+	Head->pPrev = New;
+	Head = New;
+	//Head = Head->pPrev = new Element(Data, Head);
+	size++;
+}
+void List::push_back(int Data)
+{
+	if (Head == nullptr && Tail == nullptr)
+	{
+		Head = Tail = new Element(Data);
+		size++;
+		return;
+	}
+	Element* New = new Element(Data);
+	New->pPrev = Tail;
+	Tail->pNext = New;
+	Tail = New;
+	//Tail = Tail->pNext = new Element(Data, nullptr, Tail);
+	size++;
+}
+void List::insert(size_t index, int Data)
+{
+	if (index > size)return;
+	if (index == 0)return push_front(Data);
+	if (index == size)return push_back(Data);
+	// 1) Доходим до позиции, на которую нужно вставить элемент:
+	Element* Temp;
+	if (index < size / 2)	// Если index < size / 2, тогда идем сначала.
+	{
+		Temp = Head;
+		for (size_t i = 0; i < index; i++)Temp = Temp->pNext;	// Заходим через голову, и идем по списку вперед.
+	}
+	else
+	{
+		Temp = Tail;
+		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	// Переходим на предыдущий элемент. i < size - Index - 1; - это просто количество переходов.
+	}
+	// 2) Создаем элемент и включаем его в список:
+	Element* New = new Element(Data);
+	// 1) Включаем элемент в список:
+	New->pPrev = Temp->pPrev;
+	New->pNext = Temp;
+	Temp->pPrev->pNext = New;
+	Temp->pPrev = New;
+	//Temp->pPrev = Temp->pPrev->pNext = new Element(Data, Temp, Temp->pPrev);
+	size++;
+}
+
+//			Removing elements:
+void List::pop_front()
+{
+	if (Head == Tail)
+	{
+		delete Head;
+		Head = Tail = nullptr;
+		size--;
+		return;
+	}
+	// 1) Исключаем элемент из списка:
+	Head = Head->pNext;
+	// 2) Удаляем элемент из списка:
+	delete Head->pPrev;
+	// 3) "Забываем" об удаляемом элементе:
+	Head->pPrev = nullptr;
+	size--;
+}
+void List::pop_back()
+{
+	if (Head == Tail)
+	{
+		delete Tail;
+		Head = Tail = nullptr;
+		size--;
+		return;
+	}
+	// 1) Исключаем элемент из списка:
+	Tail = Tail->pPrev;
+	// 2) Удаляем элемент из списка:
+	delete Tail->pNext;
+	// 3) Затираем об удаляемом элементе:
+	Tail->pNext = nullptr;
+	size--;
+}
+
+//			Methods:
+void List::print()const
+{
+	cout << "Head:" << Head << endl;
+	for (Element* Temp = Head; Temp; Temp = Temp->pNext)
+	{
+		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+	}
+	cout << "Количество элементов списка: " << size << endl;
+}
+void List::reverse_print()const
+{
+	cout << "Tail:" << Tail << endl;
+	for (Element* Temp = Tail; Temp; Temp = Temp->pPrev)
+	{
+		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
+	}
+	cout << "Количество элементов списка: " << size << endl;
+}
 
 List operator+(const List& left, const List& right)
 {

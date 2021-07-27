@@ -257,7 +257,7 @@ List::List()
 	size = 0;
 	cout << "LConstructor:\t" << this << endl;
 }
-List::List(size_t size, int value = int()) :List()
+List::List(size_t size, int value) :List()
 {
 	while (size--)push_back(value);
 }
@@ -294,7 +294,8 @@ List& List::operator=(const List& other)		// CopyAssignment.
 {
 	if (this == &other)return *this;
 	while (Head)pop_front();
-	for (int i : other)push_back(i);
+	for (Element* Temp = other.Head; Temp; Temp = Temp->pNext)
+		push_back(Temp->Data);
 	cout << "CopeAssignment:\t" << this << endl;
 }
 List& List::operator=(List& other)				// MoveAssignment.
@@ -540,7 +541,7 @@ void main()
 	List list1 = { 3,5,8,13,21 };
 	List list2 = { 34,55,89 };
 	List list3 = list1 + list2;
-	//list3.print();
+	list3.print();
 	//for(List::ConstIterator)
 	for (int i : list1)cout << i << tab; cout << endl;
 	for (int i : list2)cout << i << tab; cout << endl;

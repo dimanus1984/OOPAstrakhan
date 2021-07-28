@@ -13,20 +13,8 @@ class List
 		Element* pNext;	// Указатель на следующий элемент.
 		Element* pPrev;	// Указатель на предыдущий элемент.
 	public:
-		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
-		{
-#ifdef DEBUG
-			cout << "EConstructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		~Element()
-		{
-#ifdef DEBUG
-			cout << "EDestructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
+		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr);
+		~Element();
 		friend class List;
 	}*Head, * Tail;
 	//Element* Head;		// Указатель на начальный элемент списка.
@@ -37,33 +25,12 @@ class List
 	protected:
 		Element* Temp;
 	public:
-		BaseIterator(Element* Temp) :Temp(Temp)
-		{
-#ifdef DEBUG
-			cout << "BITConstructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		~BaseIterator()
-		{
-#ifdef DEBUG
-			cout << "BITDestructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
+		BaseIterator(Element* Temp);
+		~BaseIterator();
 		//			Operators:
-		bool operator==(const BaseIterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
-		{
-			return this->Temp == other.Temp;
-		}
-		bool operator!=(const BaseIterator& other)const
-		{
-			return this->Temp != other.Temp;
-		}
-		const int& operator*()const
-		{
-			return Temp->Data;
-		}
+		bool operator==(const BaseIterator& other)const;		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
+		bool operator!=(const BaseIterator& other)const;
+		const int& operator*()const;
 	};
 public:
 	class ConstIterator :public BaseIterator					// Iterator будет простой оберткой над элементом.
@@ -191,7 +158,7 @@ public:
 	List();
 	explicit List(size_t size, int value = int());
 	List(const std::initializer_list<int>& il);
-	List(const List& other);			//CopyConstructor принимает константную ссылку на объект.
+	List(const List& other);			// CopyConstructor принимает константную ссылку на объект.
 	List(List&& other);					// MoveConstructor
 	~List();
 
@@ -212,6 +179,51 @@ public:
 	void reverse_print()const;
 };
 
+/*==================================================================================================================*/
+
+List::Element::Element(int Data, List::Element* pNext, List::Element* pPrev) :Data(Data), pNext(pNext), pPrev(pPrev)
+{
+#ifdef DEBUG
+	cout << "EConstructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::Element::~Element()
+{
+#ifdef DEBUG
+	cout << "EDestructor:\t" << this << endl;
+#endif // DEBUG
+}
+
+/*==================================================================================================================*/
+
+List::BaseIterator::BaseIterator(Element* Temp) :Temp(Temp)
+{
+#ifdef DEBUG
+	cout << "BITConstructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::BaseIterator::~BaseIterator()
+{
+#ifdef DEBUG
+	cout << "BITDestructor:\t" << this << endl;
+#endif // DEBUG
+}
+//			Operators:
+bool List::BaseIterator::operator==(const BaseIterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
+{
+	return this->Temp == other.Temp;
+}
+bool List::BaseIterator::operator!=(const BaseIterator& other)const
+{
+	return this->Temp != other.Temp;
+}
+const int& List::BaseIterator::operator*()const
+{
+	return Temp->Data;
+}
+
+/*==================================================================================================================*/
+
 List::ConstIterator List::cbegin()const
 {
 	return Head;
@@ -228,7 +240,6 @@ List::Iterator List::end()
 {
 	return nullptr;
 }
-
 List::ConstReverseIterator List::crbegin()const
 {
 	return Tail;
@@ -249,6 +260,7 @@ size_t List::get_size()const
 {
 	return size;
 }
+
 List::List()
 {
 	Head = Tail = nullptr;

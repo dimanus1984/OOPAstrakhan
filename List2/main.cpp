@@ -36,112 +36,36 @@ public:
 	class ConstIterator :public BaseIterator					// Iterator будет простой оберткой над элементом.
 	{
 	public:
-		ConstIterator(Element* Temp = nullptr) :BaseIterator(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
-		{
-#ifdef DEBUG
-			cout << "ITConstructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		~ConstIterator()
-		{
-#ifdef DEBUG
-			cout << "ITDestructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		ConstIterator& operator++()	// Prefix increment.
-		{
-			Temp = Temp->pNext;
-			return *this;
-		}
-		ConstIterator operator++(int)	// Postfix increment. Возвращает Iterator по значению.
-		{
-			ConstIterator old = *this;
-			Temp = Temp->pNext;
-			return old;
-		}
-		ConstIterator& operator--()	// Prefix decrement будет переходить на предыдущий элемент
-		{
-			Temp = Temp->pPrev;
-			return *this;
-		}
-		ConstIterator operator--(int)
-		{
-			ConstIterator old = *this;
-			Temp = Temp->pPrev;
-			return old;
-		}
+		ConstIterator(Element* Temp = nullptr);	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
+		~ConstIterator();
+		ConstIterator& operator++();	// Prefix increment.
+		ConstIterator operator++(int);	// Postfix increment. Возвращает Iterator по значению.
+		ConstIterator& operator--();	// Prefix decrement будет переходить на предыдущий элемент
+		ConstIterator operator--(int);
 	};
 	class ConstReverseIterator :public BaseIterator
 	{
 	public:
-		ConstReverseIterator(Element* Temp = nullptr) :BaseIterator(Temp)
-		{
-#ifdef DEBUG
-			cout << "RITConstructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		~ConstReverseIterator()
-		{
-#ifdef DEBUG
-			cout << "RITDestructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		ConstReverseIterator& operator++()
-		{
-			Temp = Temp->pPrev;
-			return *this;
-		}
-		ConstReverseIterator operator++(int)
-		{
-			ConstReverseIterator old = *this;
-			Temp = Temp->pPrev;
-			return old;
-		}
-		ConstReverseIterator& operator--()
-		{
-			Temp = Temp->pNext;
-			return *this;
-		}
-		ConstReverseIterator operator--(int)
-		{
-			ConstReverseIterator old = *this;
-			Temp = Temp->pNext;
-			return old;
-		}
+		ConstReverseIterator(Element* Temp = nullptr);
+		~ConstReverseIterator();
+		ConstReverseIterator& operator++();
+		ConstReverseIterator operator++(int);
+		ConstReverseIterator& operator--();
+		ConstReverseIterator operator--(int);
 	};
 	class Iterator :public ConstIterator
 	{
 	public:
-		Iterator(Element* Temp) :ConstIterator(Temp)
-		{
-#ifdef DEBUG
-			cout << "ItConstructor:\t" << this << endl;
-#endif // DEBUG
-		}
-		~Iterator()
-		{
-#ifdef DEBUG
-			cout << "ItDestructor:\t" << this << endl;
-#endif // DEBUG
-		}
-		int& operator*()
-		{
-			return Temp->Data;
-		}
+		Iterator(Element* Temp);
+		~Iterator();
+		int& operator*();
 	};
 	class ReverseIterator :public ConstReverseIterator
 	{
 	public:
-		ReverseIterator(Element* Temp) :ConstReverseIterator(Temp){}
-		~ReverseIterator(){}
-		int& operator*()
-		{
-			return Temp->Data;
-		}
+		ReverseIterator(Element* Temp);
+		~ReverseIterator();
+		int& operator*();
 	};
 	
 	ConstIterator cbegin()const;
@@ -223,6 +147,112 @@ const int& List::BaseIterator::operator*()const
 }
 
 /*==================================================================================================================*/
+
+List::ConstIterator::ConstIterator(Element* Temp) :BaseIterator(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
+{
+#ifdef DEBUG
+	cout << "ITConstructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::ConstIterator::~ConstIterator()
+{
+#ifdef DEBUG
+	cout << "ITDestructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::ConstIterator& List::ConstIterator::operator++()		// Prefix increment.
+{
+	Temp = Temp->pNext;
+	return *this;
+}
+List::ConstIterator List::ConstIterator::operator++(int)	// Postfix increment. Возвращает Iterator по значению.
+{
+	ConstIterator old = *this;
+	Temp = Temp->pNext;
+	return old;
+}
+List::ConstIterator& List::ConstIterator::operator--()		// Prefix decrement будет переходить на предыдущий элемент
+{
+	Temp = Temp->pPrev;
+	return *this;
+}
+List::ConstIterator List::ConstIterator::operator--(int)
+{
+	ConstIterator old = *this;
+	Temp = Temp->pPrev;
+	return old;
+}
+
+/*==================================================================================================================*/
+
+List::ConstReverseIterator::ConstReverseIterator(Element* Temp) :BaseIterator(Temp)
+{
+#ifdef DEBUG
+	cout << "RITConstructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::ConstReverseIterator::~ConstReverseIterator()
+{
+#ifdef DEBUG
+	cout << "RITDestructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::ConstReverseIterator& List::ConstReverseIterator::operator++()
+{
+	Temp = Temp->pPrev;
+	return *this;
+}
+List::ConstReverseIterator List::ConstReverseIterator::operator++(int)
+{
+	ConstReverseIterator old = *this;
+	Temp = Temp->pPrev;
+	return old;
+}
+List::ConstReverseIterator& List::ConstReverseIterator::operator--()
+{
+	Temp = Temp->pNext;
+	return *this;
+}
+List::ConstReverseIterator List::ConstReverseIterator::operator--(int)
+{
+	ConstReverseIterator old = *this;
+	Temp = Temp->pNext;
+	return old;
+}
+
+/*==================================================================================================================*/
+
+List::Iterator::Iterator(Element* Temp) :ConstIterator(Temp)
+{
+#ifdef DEBUG
+	cout << "ItConstructor:\t" << this << endl;
+#endif // DEBUG
+}
+List::Iterator::~Iterator()
+{
+#ifdef DEBUG
+	cout << "ItDestructor:\t" << this << endl;
+#endif // DEBUG
+}
+int& List::Iterator::operator*()
+{
+	return Temp->Data;
+}
+
+/*==================================================================================================================*/
+
+List::ReverseIterator::ReverseIterator(Element* Temp) :ConstReverseIterator(Temp) {}
+List::ReverseIterator::~ReverseIterator() {}
+int& List::ReverseIterator::operator*()
+{
+	return Temp->Data;
+}
+
+/*==================================================================================================================*/
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////			List member functions			//////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////// 
 
 List::ConstIterator List::cbegin()const
 {

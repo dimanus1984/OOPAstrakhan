@@ -13,20 +13,8 @@ class List
 		Element* pNext;	// Указатель на следующий элемент.
 		Element* pPrev;	// Указатель на предыдущий элемент.
 	public:
-		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
-		{
-#ifdef DEBUG
-			cout << "EConstructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
-		~Element()
-		{
-#ifdef DEBUG
-			cout << "EDestructor:\t" << this << endl;
-#endif // DEBUG
-
-		}
+		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr);
+		~Element();
 		friend class List;
 	}*Head, * Tail;
 	//Element* Head;		// Указатель на начальный элемент списка.
@@ -176,6 +164,7 @@ public:
 			return Temp->Data;
 		}
 	};
+
 	size_t get_size()const;
 
 	ConstIterator cbegin()const;
@@ -213,6 +202,21 @@ public:
 	void print()const;
 	void reverse_print()const;
 };
+
+List::Element::Element(int Data, Element* pNext, Element* pPrev) :Data(Data), pNext(pNext), pPrev(pPrev)
+{
+#ifdef DEBUG
+	cout << "EConstructor:\t" << this << endl;
+#endif // DEBUG
+
+}
+List::Element::~Element()
+{
+#ifdef DEBUG
+	cout << "EDestructor:\t" << this << endl;
+#endif // DEBUG
+
+}
 
 size_t List::get_size()const
 {

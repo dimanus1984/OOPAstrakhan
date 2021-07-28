@@ -1,4 +1,4 @@
-#include<iostream>
+п»ї#include<iostream>
 using std::cout;
 using std::cin;
 using std::endl;
@@ -9,9 +9,9 @@ class List
 {
 	class Element
 	{
-		int Data;		// Значение элемента.
-		Element* pNext;	// Указатель на следующий элемент.
-		Element* pPrev;	// Указатель на предыдущий элемент.
+		int Data;		// Р—РЅР°С‡РµРЅРёРµ СЌР»РµРјРµРЅС‚Р°.
+		Element* pNext;	// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° СЃР»РµРґСѓСЋС‰РёР№ СЌР»РµРјРµРЅС‚.
+		Element* pPrev;	// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚.
 	public:
 		Element(int Data, Element* pNext = nullptr, Element* pPrev = nullptr) :Data(Data), pNext(pNext), pPrev(pPrev)
 		{
@@ -29,9 +29,9 @@ class List
 		}
 		friend class List;
 	}*Head, * Tail;
-	//Element* Head;		// Указатель на начальный элемент списка.
-	//Element* Tail;		// Указатель на конечный элемент списка.
-	size_t size;			// Размер списка.
+	//Element* Head;		// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РЅР°С‡Р°Р»СЊРЅС‹Р№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°.
+	//Element* Tail;		// РЈРєР°Р·Р°С‚РµР»СЊ РЅР° РєРѕРЅРµС‡РЅС‹Р№ СЌР»РµРјРµРЅС‚ СЃРїРёСЃРєР°.
+	size_t size;			// Р Р°Р·РјРµСЂ СЃРїРёСЃРєР°.
 	class BaseIterator
 	{
 	protected:
@@ -52,7 +52,7 @@ class List
 
 		}
 		//			Operators:
-		bool operator==(const BaseIterator& other)const		// Это будет константный метод, поскольку он не изменяет олбъект для которого вызывается.
+		bool operator==(const BaseIterator& other)const		// Р­С‚Рѕ Р±СѓРґРµС‚ РєРѕРЅСЃС‚Р°РЅС‚РЅС‹Р№ РјРµС‚РѕРґ, РїРѕСЃРєРѕР»СЊРєСѓ РѕРЅ РЅРµ РёР·РјРµРЅСЏРµС‚ РѕР»Р±СЉРµРєС‚ РґР»СЏ РєРѕС‚РѕСЂРѕРіРѕ РІС‹Р·С‹РІР°РµС‚СЃСЏ.
 		{
 			return this->Temp == other.Temp;
 		}
@@ -66,10 +66,10 @@ class List
 		}
 	};
 public:
-	class ConstIterator :public BaseIterator					// Iterator будет простой оберткой над элементом.
+	class ConstIterator :public BaseIterator					// Iterator Р±СѓРґРµС‚ РїСЂРѕСЃС‚РѕР№ РѕР±РµСЂС‚РєРѕР№ РЅР°Рґ СЌР»РµРјРµРЅС‚РѕРј.
 	{
 	public:
-		ConstIterator(Element* Temp = nullptr) :BaseIterator(Temp)	// Iterator принимает указатель на элемент Temp со значением по умолчанию nullptr.
+		ConstIterator(Element* Temp = nullptr) :BaseIterator(Temp)	// Iterator РїСЂРёРЅРёРјР°РµС‚ СѓРєР°Р·Р°С‚РµР»СЊ РЅР° СЌР»РµРјРµРЅС‚ Temp СЃРѕ Р·РЅР°С‡РµРЅРёРµРј РїРѕ СѓРјРѕР»С‡Р°РЅРёСЋ nullptr.
 		{
 #ifdef DEBUG
 			cout << "ITConstructor:\t" << this << endl;
@@ -88,13 +88,13 @@ public:
 			Temp = Temp->pNext;
 			return *this;
 		}
-		ConstIterator operator++(int)	// Postfix increment. Возвращает Iterator по значению.
+		ConstIterator operator++(int)	// Postfix increment. Р’РѕР·РІСЂР°С‰Р°РµС‚ Iterator РїРѕ Р·РЅР°С‡РµРЅРёСЋ.
 		{
 			ConstIterator old = *this;
 			Temp = Temp->pNext;
 			return old;
 		}
-		ConstIterator& operator--()		// Prefix decrement будет переходить на предыдущий элемент
+		ConstIterator& operator--()		// Prefix decrement Р±СѓРґРµС‚ РїРµСЂРµС…РѕРґРёС‚СЊ РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚
 		{
 			Temp = Temp->pPrev;
 			return *this;
@@ -191,7 +191,7 @@ public:
 	List();
 	explicit List(size_t size, int value = int());
 	List(const std::initializer_list<int>& il);
-	List(const List& other);			//CopyConstructor принимает константную ссылку на объект.
+	List(const List& other);			//CopyConstructor РїСЂРёРЅРёРјР°РµС‚ РєРѕРЅСЃС‚Р°РЅС‚РЅСѓСЋ СЃСЃС‹Р»РєСѓ РЅР° РѕР±СЉРµРєС‚.
 	List(List&& other);					// MoveConstructor
 	~List();
 
@@ -267,7 +267,7 @@ List::List(const std::initializer_list<int>& il) :List()
 	for (int const* it = il.begin(); it != il.end(); it++)
 		push_back(*it);
 }
-List::List(const List& other) :List()		//CopyConstructor принимает константную ссылку на объект.
+List::List(const List& other) :List()		//CopyConstructor РїСЂРёРЅРёРјР°РµС‚ РєРѕРЅСЃС‚Р°РЅС‚РЅСѓСЋ СЃСЃС‹Р»РєСѓ РЅР° РѕР±СЉРµРєС‚.
 {
 	//for (int i : other)push_back(i);
 	for (ConstIterator it = other.cbegin(); it != other.cend(); it++)
@@ -320,7 +320,7 @@ int& List::operator[](size_t index)
 	else
 	{
 		Temp = Tail;
-		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	//i < size - Index - 1; - это просто количество переходов, делаем на один переход меньше.
+		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	//i < size - Index - 1; - СЌС‚Рѕ РїСЂРѕСЃС‚Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРµСЂРµС…РѕРґРѕРІ, РґРµР»Р°РµРј РЅР° РѕРґРёРЅ РїРµСЂРµС…РѕРґ РјРµРЅСЊС€Рµ.
 	}
 	return Temp->Data;
 }
@@ -361,21 +361,21 @@ void List::insert(size_t index, int Data)
 	if (index > size)return;
 	if (index == 0)return push_front(Data);
 	if (index == size)return push_back(Data);
-	// 1) Доходим до позиции, на которую нужно вставить элемент:
+	// 1) Р”РѕС…РѕРґРёРј РґРѕ РїРѕР·РёС†РёРё, РЅР° РєРѕС‚РѕСЂСѓСЋ РЅСѓР¶РЅРѕ РІСЃС‚Р°РІРёС‚СЊ СЌР»РµРјРµРЅС‚:
 	Element* Temp;
-	if (index < size / 2)	// Если index < size / 2, тогда идем сначала.
+	if (index < size / 2)	// Р•СЃР»Рё index < size / 2, С‚РѕРіРґР° РёРґРµРј СЃРЅР°С‡Р°Р»Р°.
 	{
 		Temp = Head;
-		for (size_t i = 0; i < index; i++)Temp = Temp->pNext;	// Заходим через голову, и идем по списку вперед.
+		for (size_t i = 0; i < index; i++)Temp = Temp->pNext;	// Р—Р°С…РѕРґРёРј С‡РµСЂРµР· РіРѕР»РѕРІСѓ, Рё РёРґРµРј РїРѕ СЃРїРёСЃРєСѓ РІРїРµСЂРµРґ.
 	}
 	else
 	{
 		Temp = Tail;
-		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	// Переходим на предыдущий элемент. i < size - Index - 1; - это просто количество переходов.
+		for (size_t i = 0; i < size - index - 1; i++)Temp = Temp->pPrev;	// РџРµСЂРµС…РѕРґРёРј РЅР° РїСЂРµРґС‹РґСѓС‰РёР№ СЌР»РµРјРµРЅС‚. i < size - Index - 1; - СЌС‚Рѕ РїСЂРѕСЃС‚Рѕ РєРѕР»РёС‡РµСЃС‚РІРѕ РїРµСЂРµС…РѕРґРѕРІ.
 	}
-	// 2) Создаем элемент и включаем его в список:
+	// 2) РЎРѕР·РґР°РµРј СЌР»РµРјРµРЅС‚ Рё РІРєР»СЋС‡Р°РµРј РµРіРѕ РІ СЃРїРёСЃРѕРє:
 	Element* New = new Element(Data);
-	// 1) Включаем элемент в список:
+	// 1) Р’РєР»СЋС‡Р°РµРј СЌР»РµРјРµРЅС‚ РІ СЃРїРёСЃРѕРє:
 	New->pPrev = Temp->pPrev;
 	New->pNext = Temp;
 	Temp->pPrev->pNext = New;
@@ -394,11 +394,11 @@ void List::pop_front()
 		size--;
 		return;
 	}
-	// 1) Исключаем элемент из списка:
+	// 1) РСЃРєР»СЋС‡Р°РµРј СЌР»РµРјРµРЅС‚ РёР· СЃРїРёСЃРєР°:
 	Head = Head->pNext;
-	// 2) Удаляем элемент из списка:
+	// 2) РЈРґР°Р»СЏРµРј СЌР»РµРјРµРЅС‚ РёР· СЃРїРёСЃРєР°:
 	delete Head->pPrev;
-	// 3) "Забываем" об удаляемом элементе:
+	// 3) "Р—Р°Р±С‹РІР°РµРј" РѕР± СѓРґР°Р»СЏРµРјРѕРј СЌР»РµРјРµРЅС‚Рµ:
 	Head->pPrev = nullptr;
 	size--;
 }
@@ -411,11 +411,11 @@ void List::pop_back()
 		size--;
 		return;
 	}
-	// 1) Исключаем элемент из списка:
+	// 1) РСЃРєР»СЋС‡Р°РµРј СЌР»РµРјРµРЅС‚ РёР· СЃРїРёСЃРєР°:
 	Tail = Tail->pPrev;
-	// 2) Удаляем элемент из списка:
+	// 2) РЈРґР°Р»СЏРµРј СЌР»РµРјРµРЅС‚ РёР· СЃРїРёСЃРєР°:
 	delete Tail->pNext;
-	// 3) Затираем об удаляемом элементе:
+	// 3) Р—Р°С‚РёСЂР°РµРј РѕР± СѓРґР°Р»СЏРµРјРѕРј СЌР»РµРјРµРЅС‚Рµ:
 	Tail->pNext = nullptr;
 	size--;
 }
@@ -428,7 +428,7 @@ void List::print()const
 	{
 		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 	}
-	cout << "Количество элементов списка: " << size << endl;
+	cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°: " << size << endl;
 }
 void List::reverse_print()const
 {
@@ -437,7 +437,7 @@ void List::reverse_print()const
 	{
 		cout << Temp->pPrev << tab << Temp << tab << Temp->Data << tab << Temp->pNext << endl;
 	}
-	cout << "Количество элементов списка: " << size << endl;
+	cout << "РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ СЃРїРёСЃРєР°: " << size << endl;
 }
 
 List operator+(const List& left, const List& right)
@@ -461,7 +461,7 @@ void main()
 	setlocale(LC_ALL, "Russian");
 
 #ifdef BASE_CHECK
-	int n; cout << "Введите размер списка: "; cin >> n;
+	int n; cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ СЃРїРёСЃРєР°: "; cin >> n;
 	List list;
 	for (int i = 0; i < n; i++)
 	{
@@ -471,8 +471,8 @@ void main()
 
 	size_t index;
 	int value;
-	cout << "Введите индекс добавляемого элемента: "; cin >> index;
-	cout << "Введите значение добавляемого элемента: "; cin >> value;
+	cout << "Р’РІРµРґРёС‚Рµ РёРЅРґРµРєСЃ РґРѕР±Р°РІР»СЏРµРјРѕРіРѕ СЌР»РµРјРµРЅС‚Р°: "; cin >> index;
+	cout << "Р’РІРµРґРёС‚Рµ Р·РЅР°С‡РµРЅРёРµ РґРѕР±Р°РІР»СЏРµРјРѕРіРѕ СЌР»РµРјРµРЅС‚Р°: "; cin >> value;
 	list.insert(index, value);
 
 	list.print();
@@ -483,7 +483,7 @@ void main()
 #endif // BASE_CHECK
 
 #ifdef SIZE_CONSTRUCTOR_AND_SYBSCRIPT
-	int n; cout << "Введите размер списка: "; cin >> n;
+	int n; cout << "Р’РІРµРґРёС‚Рµ СЂР°Р·РјРµСЂ СЃРїРёСЃРєР°: "; cin >> n;
 	List list(n);
 	for (int i = 0; i < list.get_size(); i++)
 		list[i] = rand() % 100;
@@ -508,11 +508,11 @@ void main()
 		cout << *it << tab;
 	cout << endl;
 
-	/*for (List::Iterator it = list.end(); it != list.begin(); it--)	// Выводит список в обратном направлении.
+	/*for (List::Iterator it = list.end(); it != list.begin(); it--)	// Р’С‹РІРѕРґРёС‚ СЃРїРёСЃРѕРє РІ РѕР±СЂР°С‚РЅРѕРј РЅР°РїСЂР°РІР»РµРЅРёРё.
 		cout << *it << tab;
 	cout << endl;*/
 
-	for (List::ReverseIterator rit = list.rbegin(); rit != list.rend(); ++rit)	// Здесь нужен класс ReverseIterator.
+	for (List::ReverseIterator rit = list.rbegin(); rit != list.rend(); ++rit)	// Р—РґРµСЃСЊ РЅСѓР¶РµРЅ РєР»Р°СЃСЃ ReverseIterator.
 		cout << *rit << tab;
 	cout << endl;
 #endif // ITERATORS_CHECK
